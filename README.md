@@ -16,7 +16,7 @@ O aplicativo será desenvolvido para dispositivos móveis Android e oferecerá f
 ### Requisitos Funcionais
 
 #### Tela de Login e Cadastro de Usuários
-1. O aplicativo deve ter uma opção de cadastro de novos usuários, permitindo que os novos usuários criem suas contas utilizando: nome, email e senha.
+1. O aplicativo deve ter uma opção de cadastro de novos usuários, permitindo que os novos usuários criem suas contas utilizando: nome, email, senha e uma foto ou imagem de usuário opcional.
 2. O aplicativo deve ter uma tela inicial de login onde os usuários possam entrar com seu identificador (email) e senha.
 
 #### Gerenciamento de Despesas
