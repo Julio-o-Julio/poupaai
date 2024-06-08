@@ -1,0 +1,83 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main"
+    app:startDestination="@id/FragmentMyExpensesMonthly">
+
+    <fragment
+        android:id="@+id/FragmentMyExpensesMonthly"
+        android:name="com.example.poupaai.views.FragmentMyExpensesMonthly"
+        android:label="@string/may_expenses_monthly"
+        tools:layout="@layout/fragment_my_expenses_monthly">
+
+        <action
+            android:id="@+id/action_to_fragment_my_expenses_monthly"
+            app:destination="@id/FragmentMyExpensesMonthly" />
+        <action
+            android:id="@+id/action_to_fragment_my_profile"
+            app:destination="@id/FragmentMyProfile" />
+        <action
+            android:id="@+id/action_to_fragment_add_expenses"
+            app:destination="@id/FragmentAddExpense" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses"
+            app:destination="@id/FragmentMyExpenses" />
+    </fragment>
+    <fragment
+        android:id="@+id/FragmentMyExpenses"
+        android:name="com.example.poupaai.views.FragmentMyExpenses"
+        android:label="@string/add_expenses"
+        tools:layout="@layout/fragment_my_expenses_monthly">
+
+        <action
+            android:id="@+id/action_to_fragment_my_expenses"
+            app:destination="@id/FragmentMyExpenses" />
+        <action
+            android:id="@+id/action_to_fragment_add_expenses"
+            app:destination="@id/FragmentAddExpense" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses_monthly"
+            app:destination="@id/FragmentMyExpensesMonthly" />
+        <action
+            android:id="@+id/action_to_fragment_my_profile"
+            app:destination="@id/FragmentMyProfile" />
+    </fragment>
+    <fragment
+        android:id="@+id/FragmentAddExpense"
+        android:name="com.example.poupaai.views.FragmentAddExpense"
+        android:label="@string/add_expenses"
+        tools:layout="@layout/fragment_my_expenses_monthly">
+
+        <action
+            android:id="@+id/action_to_fragment_add_expenses"
+            app:destination="@id/FragmentAddExpense" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses_monthly"
+            app:destination="@id/FragmentMyExpensesMonthly" />
+        <action
+            android:id="@+id/action_to_fragment_my_profile"
+            app:destination="@id/FragmentMyProfile" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses"
+            app:destination="@id/FragmentMyExpenses" />
+    </fragment>
+    <fragment
+        android:id="@+id/FragmentMyProfile"
+        android:name="com.example.poupaai.views.FragmentMyProfile"
+        android:label="@string/my_profile"
+        tools:layout="@layout/fragment_my_profile">
+
+        <action
+            android:id="@+id/action_to_fragment_my_profile"
+            app:destination="@id/FragmentMyProfile" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses_monthly"
+            app:destination="@id/FragmentMyExpensesMonthly" />
+        <action
+            android:id="@+id/action_to_fragment_add_expenses"
+            app:destination="@id/FragmentAddExpense" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses"
+            app:destination="@id/FragmentMyExpenses" />
+    </fragment>
+</navigation>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:paddingHorizontal="24dp"
+    android:paddingVertical="16dp"
+    android:background="@drawable/background_items"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:showIn="@layout/fragment_my_expenses_monthly">
+
+    <TextView
+        android:id="@+id/tvMonthName"
+        android:text="@string/month_name"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        style="@style/TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvYear"
+        style="@style/TextView"
+        android:text="@string/month_year"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMonthName"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTotalExpenses"
+        style="@style/TextView"
+        android:text="@string/total_expenses_of_month"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@id/tvYear"
+        app:layout_constraintTop_toBottomOf="@id/tvMonthName"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

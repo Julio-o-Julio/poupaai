@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_initial"
+    app:startDestination="@id/FormLogin">
+
+    <fragment
+        android:id="@+id/FormLogin"
+        android:name="com.example.poupaai.views.initial.FormLogin"
+        android:label="@string/initial_title_to_enter"
+        tools:layout="@layout/fragment_form_login">
+
+        <action
+            android:id="@+id/action_FormLogin_to_FormRegister"
+            app:destination="@id/FormRegister" />
+    </fragment>
+    <fragment
+        android:id="@+id/FormRegister"
+        android:name="com.example.poupaai.views.initial.FormRegister"
+        android:label="@string/initial_title_register"
+        tools:layout="@layout/fragment_form_register">
+
+        <action
+            android:id="@+id/action_FormRegister_to_FormLogin"
+            app:destination="@id/FormLogin" />
+    </fragment>
+</navigation>
