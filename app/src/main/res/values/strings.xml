@@ -11,6 +11,8 @@
     <string name="btn_register">Cadastrar</string>
     <string name="text_to_register">Não tem uma conta?\nClique aqui para se cadastrar</string>
     <string name="text_to_login">Já tem uma conta?\nClique aqui para entrar</string>
+    <string name="btn_take_picture">Tirar uma foto</string>
+    <string name="btn_choose_galery">Escolher da galeria</string>
 
     <!-- Strings used for main navigation -->
     <string name="may_expenses_monthly">Minhas despesas mensais</string>

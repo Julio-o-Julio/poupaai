@@ -12,15 +12,14 @@ import androidx.room.PrimaryKey;
 public class User implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int uid;
-
     @ColumnInfo(name = "username")
     private String username;
-
     @ColumnInfo(name = "email")
     private String email;
-
     @ColumnInfo(name = "password_hash")
     private String passwordHash;
+    @ColumnInfo(name = "profile_image_path")
+    private String profileImagePath;
 
     public User() {}
 
@@ -29,6 +28,7 @@ public class User implements Parcelable {
         username = in.readString();
         email = in.readString();
         passwordHash = in.readString();
+        profileImagePath = in.readString();
     }
 
     @Override
@@ -42,6 +42,7 @@ public class User implements Parcelable {
         dest.writeString(username);
         dest.writeString(email);
         dest.writeString(passwordHash);
+        dest.writeString(profileImagePath);
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -79,5 +80,11 @@ public class User implements Parcelable {
     }
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+    public String getProfileImagePath() {
+        return profileImagePath;
+    }
+    public void setProfileImagePath(String profileImagePath) {
+        this.profileImagePath = profileImagePath;
     }
 }

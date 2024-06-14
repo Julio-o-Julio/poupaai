@@ -1,7 +1,9 @@
 package com.example.poupaai.views;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.example.poupaai.R;
 import com.example.poupaai.database.LocalDatabase;
 import com.example.poupaai.databinding.FragmentMyProfileBinding;
 import com.example.poupaai.entities.User;
@@ -27,7 +31,6 @@ public class FragmentMyProfile extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
         binding = FragmentMyProfileBinding.inflate(inflater, container, false);
 
         db = LocalDatabase.getDatabase(requireContext());
@@ -40,11 +43,19 @@ public class FragmentMyProfile extends Fragment {
         if (loggedUser != null) {
             binding.edtMyName.setText(loggedUser.getUsername());
             binding.edtMyEmail.setText(loggedUser.getEmail());
+
+            if (loggedUser.getProfileImagePath() != null) {
+                Glide.with(requireContext())
+                        .load(Uri.parse(loggedUser.getProfileImagePath()))
+                        .placeholder(R.drawable.ic_avatar)
+                        .error(R.drawable.ic_avatar)
+                        .into(binding.ivImgProfile);
+            }
         }
 
         return binding.getRoot();
-
     }
+
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
