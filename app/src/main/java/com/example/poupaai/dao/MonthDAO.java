@@ -19,10 +19,14 @@ public interface MonthDAO {
     List<Month> loadAllByIds(int[] monthIds);
     @Query("SELECT * FROM months WHERE id = :id LIMIT 1")
     Month findById(int id);
+    @Query("SELECT * FROM months WHERE id IN (SELECT DISTINCT monthId FROM expenses WHERE userId = :userId)")
+    List<Month> getMonthsWithExpenses(int userId);
+    @Query("SELECT * FROM months WHERE monthName = :monthName AND year = :year")
+    List<Month> findByMonthNameAndYear(String monthName, int year);
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Month city);
+    void insert(Month month);
     @Update
-    void update(Month city);
+    void update(Month month);
     @Delete
-    void delete(Month city);
+    void delete(Month month);
 }

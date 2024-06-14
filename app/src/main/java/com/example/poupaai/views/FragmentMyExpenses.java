@@ -1,5 +1,6 @@
 package com.example.poupaai.views;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,18 +12,38 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.poupaai.adapters.ExpenseAdapter;
 import com.example.poupaai.database.LocalDatabase;
 import com.example.poupaai.databinding.FragmentMyExpensesBinding;
 import com.example.poupaai.entities.Expense;
+import com.example.poupaai.entities.Month;
+import com.example.poupaai.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentMyExpenses extends Fragment {
     private FragmentMyExpensesBinding binding;
-    private LocalDatabase db;
     private ExpenseAdapter expenseAdapter;
-    private List<Expense> expenseList;
+    private ArrayList<Expense> expenseList;
+    private Month month;
+    private User loggedUser;
+    private LocalDatabase db;
+    private OnMonthSelectedListener callback;
+
+    public interface OnMonthSelectedListener {
+        void onMonthSelected(Month month);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            callback = (OnMonthSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnMonthSelectedListener");
+        }
+    }
 
     @Override
     public View onCreateView(
@@ -34,9 +55,19 @@ public class FragmentMyExpenses extends Fragment {
 
         db = LocalDatabase.getDatabase(requireContext());
 
-        expenseList = new ArrayList<>(db.expenseModel().getAll());
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            month = arguments.getParcelable("month");
+            loggedUser = arguments.getParcelable("user");
+        }
 
-        expenseAdapter = new ExpenseAdapter(expenseList, NavHostFragment.findNavController(this));
+        expenseList = new ArrayList<>(db.expenseModel().getExpensesByMonthIdAndUserId(month.getId(), loggedUser.getUid()));
+
+        if (callback != null) {
+            callback.onMonthSelected(month);
+        }
+
+        expenseAdapter = new ExpenseAdapter(loggedUser, expenseList, month, NavHostFragment.findNavController(this));
 
         RecyclerView recyclerView = binding.recyclerViewFragmentMyExpenses;
         recyclerView.setAdapter(expenseAdapter);

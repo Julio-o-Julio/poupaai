@@ -11,30 +11,65 @@
     tools:showIn="@layout/fragment_my_expenses">
 
     <TextView
-        android:id="@+id/tvMonthName"
-        android:text="@string/month_name"
-        android:textSize="18sp"
+        android:id="@+id/tvExpenseDay"
+        android:text="@string/expense_day"
+        android:textSize="16sp"
         android:textStyle="bold"
         style="@style/TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvYear"
+        android:id="@+id/tvExpenseMonthName"
+        android:text="@string/expense_month_name"
+        android:textSize="16sp"
+        android:textStyle="bold"
         style="@style/TextView"
-        android:text="@string/month_year"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvMonthName"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:alpha="0.8"
+        app:layout_constraintStart_toEndOf="@id/tvExpenseDay"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvTotalExpenses"
+        android:id="@+id/tvExpenseYear"
         style="@style/TextView"
-        android:text="@string/total_expenses_of_month"
+        android:text="@string/month_year"
+        android:layout_marginTop="2dp"
+        android:alpha="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvExpenseValue"
+        style="@style/TextView"
+        android:text="@string/expense_value"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@id/tvYear"
-        app:layout_constraintTop_toBottomOf="@id/tvMonthName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvExpenseDay" />
+
+    <TextView
+        android:id="@+id/tvExpenseCategory"
+        style="@style/TextView"
+        android:text="@string/expense_category"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvExpenseDay" />
+
+    <TextView
+        android:id="@+id/tvExpenseDescription"
+        style="@style/TextView"
+        android:text="@string/expense_description"
+        android:layout_marginTop="10dp"
+        android:alpha="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvExpenseValue" />
+
+    <TextView
+        android:id="@+id/tvExpenseStatus"
+        style="@style/TextView"
+        android:text="@string/expense_status"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvExpenseDescription"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

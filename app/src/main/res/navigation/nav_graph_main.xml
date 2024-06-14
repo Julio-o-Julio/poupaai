@@ -10,6 +10,11 @@
         android:label="@string/may_expenses_monthly"
         tools:layout="@layout/fragment_my_expenses_monthly">
 
+        <argument
+            android:name="user"
+            app:argType="com.example.poupaai.entities.User"
+            app:nullable="true" />
+
         <action
             android:id="@+id/action_to_fragment_my_expenses_monthly"
             app:destination="@id/FragmentMyExpensesMonthly" />
@@ -26,7 +31,7 @@
     <fragment
         android:id="@+id/FragmentMyExpenses"
         android:name="com.example.poupaai.views.FragmentMyExpenses"
-        android:label="@string/add_expenses"
+        android:label="@string/my_expenses"
         tools:layout="@layout/fragment_my_expenses_monthly">
 
         <action

@@ -2,6 +2,7 @@ package com.example.poupaai.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +13,24 @@ import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.poupaai.R;
+import com.example.poupaai.database.LocalDatabase;
+import com.example.poupaai.entities.Expense;
 import com.example.poupaai.entities.Month;
+import com.example.poupaai.entities.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MonthViewHolder> {
     private List<Month> monthList;
+    private LocalDatabase db;
+    private User loggedUser;
     private NavController navController;
-    private Context context;
 
-    public MonthAdapter(List<Month> monthList, NavController navController) {
+    public MonthAdapter(List<Month> monthList, LocalDatabase db, User loggedUser, NavController navController) {
         this.monthList = monthList;
+        this.db = db;
+        this.loggedUser = loggedUser;
         this.navController = navController;
     }
 
@@ -45,8 +53,9 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MonthViewHol
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("month", month);
+                bundle.putParcelable("user", loggedUser);
 
-                navController.navigate(R.id.action_to_fragment_add_expenses, bundle);
+                navController.navigate(R.id.action_to_fragment_my_expenses, bundle);
             }
         });
     }
@@ -71,8 +80,14 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MonthViewHol
 
         public void bind(Month month) {
             monthName.setText(month.getMonthName());
-            year.setText(month.getYear());
-            totalExpenses.setText("error total despesas");
+            year.setText(String.valueOf(month.getYear()));
+
+            List<Expense> expenseList = db.expenseModel().getExpensesByMonthIdAndUserId(month.getId(), loggedUser.getUid());
+            double total = 0;
+            for (Expense expense : expenseList) {
+                total += expense.getValue();
+            }
+            totalExpenses.setText(String.format("Total: R$ %.2f", total).replace(".", ","));
         }
     }
 }

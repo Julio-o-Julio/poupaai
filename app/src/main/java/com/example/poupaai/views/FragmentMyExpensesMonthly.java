@@ -1,6 +1,8 @@
 package com.example.poupaai.views;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.example.poupaai.adapters.MonthAdapter;
 import com.example.poupaai.database.LocalDatabase;
 import com.example.poupaai.databinding.FragmentMyExpensesMonthlyBinding;
 import com.example.poupaai.entities.Month;
+import com.example.poupaai.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,34 +27,51 @@ public class FragmentMyExpensesMonthly extends Fragment {
     private FragmentMyExpensesMonthlyBinding binding;
     private LocalDatabase db;
     private MonthAdapter monthAdapter;
-    private List<Month> monthcList;
+    private List<Month> monthList;
+    private User loggedUser;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (getArguments() != null) {
+            loggedUser = getArguments().getParcelable("user");
+            Log.d("FragmentMyExpensesMonthly", "onAttach: loggedUser = " + loggedUser);
+        }
+    }
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
         binding = FragmentMyExpensesMonthlyBinding.inflate(inflater, container, false);
-
         db = LocalDatabase.getDatabase(requireContext());
 
-        monthcList = new ArrayList<>(db.monthModel().getAll());
+        if (loggedUser == null && getArguments() != null) {
+            loggedUser = getArguments().getParcelable("user");
+        }
 
-        monthAdapter = new MonthAdapter(monthcList, NavHostFragment.findNavController(this));
+        Log.d("FragmentMyExpensesMonthly", "onCreateView: loggedUser = " + loggedUser);
+
+        if (loggedUser != null) {
+            monthList = new ArrayList<>(db.monthModel().getMonthsWithExpenses(loggedUser.getUid()));
+        } else {
+            Log.d("FragmentMyExpensesMonthly", "LoggedUser is null");
+            monthList = new ArrayList<>();
+        }
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        monthAdapter = new MonthAdapter(monthList, db, loggedUser, NavHostFragment.findNavController(this));
 
         RecyclerView recyclerView = binding.recyclerViewMyExpensesMonthly;
         recyclerView.setAdapter(monthAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        return binding.getRoot();
-
-    }
-
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
     }
 
     @Override
@@ -59,5 +79,4 @@ public class FragmentMyExpensesMonthly extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
 }

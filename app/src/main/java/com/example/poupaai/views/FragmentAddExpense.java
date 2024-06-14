@@ -1,33 +1,75 @@
 package com.example.poupaai.views;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import com.example.poupaai.R;
 import com.example.poupaai.database.LocalDatabase;
 import com.example.poupaai.databinding.FragmentAddExpensesBinding;
 import com.example.poupaai.entities.Expense;
 import com.example.poupaai.entities.Month;
+import com.example.poupaai.entities.User;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class FragmentAddExpense extends Fragment {
     private FragmentAddExpensesBinding binding;
     private LocalDatabase db;
-    private Expense expense;
-    private List<Month> monthList;
+    private Expense expense = null;
     private Month selectedMonth = null;
+    private User loggedUser = null;
+
+    private static final Map<String, String> monthNameToNumberMap = new HashMap<>();
+    private static final Map<Integer, String> monthNumberToNameMap = new HashMap<>();
+
+    static {
+        monthNameToNumberMap.put("janeiro", "01");
+        monthNameToNumberMap.put("fevereiro", "02");
+        monthNameToNumberMap.put("março", "03");
+        monthNameToNumberMap.put("abril", "04");
+        monthNameToNumberMap.put("maio", "05");
+        monthNameToNumberMap.put("junho", "06");
+        monthNameToNumberMap.put("julho", "07");
+        monthNameToNumberMap.put("agosto", "08");
+        monthNameToNumberMap.put("setembro", "09");
+        monthNameToNumberMap.put("outubro", "10");
+        monthNameToNumberMap.put("novembro", "11");
+        monthNameToNumberMap.put("dezembro", "12");
+
+        monthNumberToNameMap.put(1, "janeiro");
+        monthNumberToNameMap.put(2, "fevereiro");
+        monthNumberToNameMap.put(3, "março");
+        monthNumberToNameMap.put(4, "abril");
+        monthNumberToNameMap.put(5, "maio");
+        monthNumberToNameMap.put(6, "junho");
+        monthNumberToNameMap.put(7, "julho");
+        monthNumberToNameMap.put(8, "agosto");
+        monthNumberToNameMap.put(9, "setembro");
+        monthNumberToNameMap.put(10, "outubro");
+        monthNumberToNameMap.put(11, "novembro");
+        monthNumberToNameMap.put(12, "dezembro");
+    }
 
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAddExpensesBinding.inflate(inflater, container, false);
 
         db = LocalDatabase.getDatabase(requireContext());
@@ -35,56 +77,59 @@ public class FragmentAddExpense extends Fragment {
         Bundle arguments = getArguments();
         if (arguments != null) {
             expense = arguments.getParcelable("expense");
+            selectedMonth = arguments.getParcelable("month");
+            loggedUser = arguments.getParcelable("user");
+
+            if (loggedUser == null) {
+                Log.e("FragmentAddExpense", "loggedUser is null");
+            }
+        } else {
+            Log.e("FragmentAddExpense", "Arguments are null");
+        }
+
+        if (selectedMonth != null) {
+            binding.edtExpenseMonth.setText(monthNameToNumberMap.get(selectedMonth.getMonthName()));
+            binding.edtExpenseYear.setText(String.valueOf(selectedMonth.getYear()));
         }
 
         if (expense != null) {
-            String street = "";
-            int number = -1;
+            binding.edtExpenseDay.setText(String.valueOf(expense.getDay()));
+            binding.edtExpenseValue.setText(String.valueOf(expense.getValue()));
+            binding.edtExpenseDescription.setText(expense.getDescription());
+        }
 
-            try {
-                android.location.Address locationAddress = searchAddress(address.getLatitude(), address.getLongitude());
+        if (loggedUser != null) {
+            List<Expense> expenseList = db.expenseModel().getExpensesByUserId(loggedUser.getUid());
 
-                street = locationAddress.getThoroughfare();
-                number = Integer.parseInt(locationAddress.getSubThoroughfare());
+            if (expenseList != null) {
+                List<Expense> expenseListWithPrompt = new ArrayList<>();
+                Expense promptExpense = new Expense();
+                promptExpense.setCategory("Categorias");
+                expenseListWithPrompt.add(promptExpense);
+                expenseListWithPrompt.addAll(expenseList);
 
-            }catch (Exception e){
-                Toast.makeText(requireContext(),
-                        "Erro ao tentar obter a Rua e o Numero através da latitude e longitude",
-                        Toast.LENGTH_SHORT).show();
-            }
+                ArrayAdapter<Expense> expenseArrayAdapter = getExpenseArrayAdapter(expenseListWithPrompt);
+                binding.spinnerExpenseCategories.setAdapter(expenseArrayAdapter);
 
-            selectedCity = db.cityModel().findById(address.getCityId());
+                if (expense != null) {
+                    String expenseCategory = expense.getCategory();
+                    for (int i = 0; i < expenseArrayAdapter.getCount(); i++) {
+                        Expense adapterExpense = expenseArrayAdapter.getItem(i);
+                        if (adapterExpense != null && adapterExpense.getCategory().equals(expenseCategory)) {
+                            binding.spinnerExpenseCategories.setSelection(i);
+                            break;
+                        }
+                    }
+                }
 
-            binding.edtAddressCityName.setText(selectedCity.getName());
-            binding.edtAddressCityState.setText(selectedCity.getState());
-            binding.edtAddressDescription.setText(address.getDescription());
-            binding.edtAddressStreet.setText(street);
-            binding.edtAddressNumber.setText(String.valueOf(number));
-        } else {
-            cityList = db.cityModel().getAll();
-
-            if (cityList != null) {
-                List<City> cityListWithPrompt = new ArrayList<>();
-                City promptCity = new City();
-                promptCity.setName("Escolha uma cidade");
-                cityListWithPrompt.add(promptCity);
-                cityListWithPrompt.addAll(cityList);
-
-                ArrayAdapter<City> adapter = getCityArrayAdapter(cityListWithPrompt);
-                binding.nameCitySpinner.setAdapter(adapter);
-
-                binding.nameCitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                binding.spinnerExpenseCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         if (position != 0) {
-                            City city = (City) parent.getItemAtPosition(position);
-                            binding.edtAddressCityName.setText(city.getName());
-                            binding.edtAddressCityState.setText(city.getState());
-                            selectedCity = city;
+                            Expense expense = (Expense) parent.getItemAtPosition(position);
+                            binding.edtExpenseCategory.setText(expense.getCategory());
                         } else {
-                            binding.edtAddressCityName.setText("");
-                            binding.edtAddressCityState.setText("");
-                            selectedCity = null;
+                            binding.edtExpenseCategory.setText("");
                         }
                     }
 
@@ -94,43 +139,69 @@ public class FragmentAddExpense extends Fragment {
             }
         }
 
-        return binding.getRoot();
+        Spinner spinnerExpenseStatus = binding.spinnerExpenseStatus;
+        ArrayAdapter<CharSequence> statusArrayAdapter = ArrayAdapter.createFromResource(requireContext(),
+                R.array.expense_status_array, android.R.layout.simple_spinner_item);
+        statusArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerExpenseStatus.setAdapter(statusArrayAdapter);
 
+        if (expense != null) {
+            String expenseStatus = expense.getStatus();
+            if (expenseStatus != null) {
+                for (int i = 0; i < statusArrayAdapter.getCount(); i++) {
+                    if (statusArrayAdapter.getItem(i).toString().equals(expenseStatus)) {
+                        spinnerExpenseStatus.setSelection(i);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return binding.getRoot();
     }
 
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (address == null) {
-            binding.btnAddAddress.setOnClickListener(this::addAddress);
+        if (expense != null) {
+            binding.btnAddExpense.setOnClickListener(v -> saveExpense(view, false));
+            binding.btnAddExpense.setText(R.string.btn_save_expense);
+            binding.btnRemoveExpense.setVisibility(View.VISIBLE);
+            binding.btnRemoveExpense.setOnClickListener(this::removeExpense);
         } else {
-            binding.btnAddAddress.setOnClickListener(this::saveAddress);
-            binding.btnAddAddress.setText(R.string.save_address);
-            binding.btnRemoveAddress.setVisibility(View.VISIBLE);
-            binding.btnRemoveAddress.setOnClickListener(this::removeAddress);
-            binding.nameCitySpinner.setVisibility(View.GONE);
-            binding.btnViewInMap.setVisibility(View.VISIBLE);
-            binding.btnViewInMap.setOnClickListener(v ->
-                    binding.frameMap.setVisibility(View.VISIBLE));
+            binding.btnAddExpense.setOnClickListener(v -> saveExpense(view, true));
         }
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
+        binding.edtExpenseValue.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String text = s.toString();
+                if (text.contains(".")) {
+                    binding.edtExpenseValue.setText(text.replace(".", ","));
+                    binding.edtExpenseValue.setSelection(binding.edtExpenseValue.getText().length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
     }
 
-    private ArrayAdapter<City> getCityArrayAdapter(List<City> cityListWithPrompt) {
-        ArrayAdapter<City> adapter = new ArrayAdapter<City>(requireContext(), android.R.layout.simple_spinner_item, cityListWithPrompt) {
+    private ArrayAdapter<Expense> getExpenseArrayAdapter(List<Expense> expenseListWithPrompt) {
+        ArrayAdapter<Expense> adapter = new ArrayAdapter<Expense>(requireContext(), android.R.layout.simple_spinner_item, expenseListWithPrompt) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
                     convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_item, parent, false);
                 }
-                City city = getItem(position);
-                if (city != null) {
+                Expense expense = getItem(position);
+                if (expense != null) {
                     TextView textView = convertView.findViewById(android.R.id.text1);
-                    textView.setText(city.getName());
+                    textView.setText(expense.getCategory());
                 }
                 return convertView;
             }
@@ -140,10 +211,10 @@ public class FragmentAddExpense extends Fragment {
                 if (convertView == null) {
                     convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
                 }
-                City city = getItem(position);
-                if (city != null) {
+                Expense expense = getItem(position);
+                if (expense != null) {
                     TextView textView = convertView.findViewById(android.R.id.text1);
-                    textView.setText(city.getName());
+                    textView.setText(expense.getCategory());
                 }
                 return convertView;
             }
@@ -152,205 +223,142 @@ public class FragmentAddExpense extends Fragment {
         return adapter;
     }
 
-    private void addAddress(View view) {
-        if (selectedCity == null) {
-            Toast.makeText(requireContext(), "Escolha uma cidade", Toast.LENGTH_SHORT).show();
+    private void saveExpense(View view, boolean isNew) {
+        String expenseDay = binding.edtExpenseDay.getText().toString();
+        String expenseMonth = binding.edtExpenseMonth.getText().toString();
+        String expenseYear = binding.edtExpenseYear.getText().toString();
+        String expenseCategory = binding.edtExpenseCategory.getText().toString();
+        String expenseValue = binding.edtExpenseValue.getText().toString();
+        String expenseStatus = binding.spinnerExpenseStatus.getSelectedItem().toString();
+        String expenseDescription = binding.edtExpenseDescription.getText().toString();
+
+        expenseValue = expenseValue.replace(",", ".");
+
+        if (!validateExpenseFields(expenseDay, expenseMonth, expenseYear, expenseCategory, expenseValue, expenseStatus)) {
             return;
         }
 
-        String addressDescription = binding.edtAddressDescription.getText().toString();
-        String addressStreet = binding.edtAddressStreet.getText().toString();
-        String addressNumberText = binding.edtAddressNumber.getText().toString();
-        int addressNumber = 0;
-        double addressLatitude = 0.0;
-        double addressLongitude = 0.0;
+        String monthName = monthNumberToNameMap.get(Integer.parseInt(expenseMonth));
+        int monthYear = Integer.parseInt(expenseYear);
 
-        if (!validateAddressFields(addressDescription, addressStreet, addressNumberText)) {
-            return;
-        }
-        addressNumber = Integer.parseInt(addressNumberText);
-
-        try {
-            android.location.Address locationAddress = searchLatitudeAndLongitude(selectedCity.getName(), addressStreet, addressNumber);
-
-            addressLatitude = locationAddress.getLatitude();
-            addressLongitude = locationAddress.getLongitude();
-
-        }catch (Exception e){
-            Toast.makeText(requireContext(),
-                    "Erro ao tentar obter a Latitude e Longitude através do endereço",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Address newAddress = new Address();
-        newAddress.setDescription(addressDescription);
-        newAddress.setLatitude(addressLatitude);
-        newAddress.setLongitude(addressLongitude);
-        newAddress.setCityId(selectedCity.getId());
-
-        db.addressModel().insert(newAddress);
-        Toast.makeText(requireContext(), "O endereço " + addressDescription + " foi adicionado com sucesso",
-                Toast.LENGTH_SHORT).show();
-
-        NavController navController = Navigation.findNavController(view);
-        navController.navigateUp();
-    }
-
-    private void saveAddress(View view) {
-        if (selectedCity == null) {
-            Toast.makeText(requireContext(), "Escolha uma cidade", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String addressDescription = binding.edtAddressDescription.getText().toString();
-        String addressStreet = binding.edtAddressStreet.getText().toString();
-        String addressNumberText = binding.edtAddressNumber.getText().toString();
-        int addressNumber = 0;
-        double addressLatitude = address.getLatitude();
-        double addressLongitude = address.getLongitude();
-
-        String street = "";
-        int number = -1;
-        try {
-            android.location.Address locationAddress = searchAddress(addressLatitude, addressLongitude);
-
-            street = locationAddress.getThoroughfare();
-            number = Integer.parseInt(locationAddress.getSubThoroughfare());
-
-        }catch (Exception e){
-            Toast.makeText(requireContext(),
-                    "Erro ao tentar obter a Rua e o Numero através da latitude e longitude",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (!validateAddressFields(addressDescription, addressStreet, addressNumberText)) {
-            return;
-        }
-        addressNumber = Integer.parseInt(addressNumberText);
-
-        if (addressDescription.equalsIgnoreCase(address.getDescription()) &&
-                addressStreet.equalsIgnoreCase(street) &&
-                addressNumber == number) {
-            Toast.makeText(requireContext(), "Nenhum dado foi alterado", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        try {
-            android.location.Address locationAddress = searchLatitudeAndLongitude(selectedCity.getName(), addressStreet, addressNumber);
-
-            addressLatitude = locationAddress.getLatitude();
-            addressLongitude = locationAddress.getLongitude();
-
-        }catch (Exception e){
-            Toast.makeText(requireContext(),
-                    "Erro ao tentar obter a Latitude e Longitude através do endereço",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        address.setDescription(addressDescription);
-        address.setLatitude(addressLatitude);
-        address.setLongitude(addressLongitude);
-
-        db.addressModel().update(address);
-        Toast.makeText(requireContext(), "O endereço " + addressDescription + " foi alterado com sucesso",
-                Toast.LENGTH_SHORT).show();
-    }
-
-    private android.location.Address searchLatitudeAndLongitude(String cityName, String streetName, int number) throws IOException {
-        android.location.Address locationAddress = null;
-        List<android.location.Address> listLocationAddress;
-        String numberText = String.valueOf(number);
-
-        Geocoder geocoder = new Geocoder(getContext());
-
-        listLocationAddress = geocoder.getFromLocationName(streetName + ", " + numberText + ", " + cityName, 1);
-
-        if (!listLocationAddress.isEmpty()) {
-            locationAddress = listLocationAddress.get(0);
-        }
-
-        return locationAddress;
-    }
-
-    private android.location.Address searchAddress(double latitude, double longitude) {
-        android.location.Address locationAddress = null;
-        List<android.location.Address> listLocationAddress;
-
-        Geocoder geocoder = new Geocoder(requireContext());
-
-        if (!Geocoder.isPresent()) {
-            return null;
-        }
-
-        try {
-            listLocationAddress = geocoder.getFromLocation(latitude, longitude, 2);
-
-            if (!listLocationAddress.isEmpty()) {
-                locationAddress = listLocationAddress.get(0);
+        if (selectedMonth == null || !Objects.equals(selectedMonth.getMonthName(), monthName)) {
+            List<Month> months = db.monthModel().findByMonthNameAndYear(monthName, monthYear);
+            if (months.isEmpty()) {
+                selectedMonth = new Month();
+                selectedMonth.setMonthName(monthName);
+                selectedMonth.setYear(monthYear);
+                db.monthModel().insert(selectedMonth);
+                selectedMonth = db.monthModel().findByMonthNameAndYear(monthName, monthYear).get(0);
+            } else {
+                selectedMonth = months.get(0);
             }
-        } catch (IOException e) {
         }
 
-        return locationAddress;
+        Expense newExpense = (expense != null && !isNew) ? expense : new Expense();
+        newExpense.setDay(Integer.parseInt(expenseDay));
+        newExpense.setCategory(expenseCategory);
+        newExpense.setValue(Double.parseDouble(expenseValue));
+        newExpense.setStatus(expenseStatus);
+        newExpense.setDescription(expenseDescription);
+        newExpense.setMonthId(selectedMonth.getId());
+        newExpense.setUserId(loggedUser.getUid());
+
+        if (isNew) {
+            db.expenseModel().insert(newExpense);
+            Toast.makeText(requireContext(), "A despesa foi adicionada com sucesso", Toast.LENGTH_SHORT).show();
+        } else {
+            db.expenseModel().update(newExpense);
+            Toast.makeText(requireContext(), "A despesa foi alterada com sucesso", Toast.LENGTH_SHORT).show();
+        }
+
+        Navigation.findNavController(view).navigateUp();
     }
 
-    private boolean validateAddressFields(String description, String street, String numberText) {
-        if(description.isEmpty()) {
-            Toast.makeText(requireContext(), "A descrição do endereço é obrigatória", Toast.LENGTH_SHORT).show();
+    private boolean validateExpenseFields(String expenseDay, String expenseMonth, String expenseYear, String expenseCategory, String expenseValue, String expenseStatus) {
+        if (expenseDay.isEmpty() || !isValidInteger(expenseDay)) {
+            showToast("Insira um valor válido para o dia");
             return false;
         }
-        if(street.isEmpty()) {
-            Toast.makeText(requireContext(), "O nome da rua é obrigatório", Toast.LENGTH_SHORT).show();
+        if (expenseMonth.isEmpty() || !isValidInteger(expenseMonth)) {
+            showToast("Insira um valor válido para o mês");
             return false;
         }
-        if(numberText.isEmpty()) {
-            Toast.makeText(requireContext(), "O número do endereço é obrigatório", Toast.LENGTH_SHORT).show();
+        if (expenseYear.isEmpty() || !isValidInteger(expenseYear)) {
+            showToast("Insira um valor válido para o ano");
             return false;
         }
-        try {
-            Integer.parseInt(numberText);
-        } catch (NumberFormatException e) {
-            Toast.makeText(requireContext(), "Insira um valor válido para o número do endereço", Toast.LENGTH_SHORT).show();
+        if (!validateDate(expenseDay, expenseMonth, expenseYear)) {
+            return false;
+        }
+        if (expenseCategory.isEmpty()) {
+            showToast("A categoria da despesa é obrigatória");
+            return false;
+        }
+        if (expenseValue.isEmpty() || !isValidDouble(expenseValue)) {
+            showToast("Insira um valor válido para o valor da despesa");
+            return false;
+        }
+        if (expenseStatus.isEmpty() || expenseStatus.equals("Escolha um status")) {
+            showToast("O status da despesa é obrigatório");
             return false;
         }
         return true;
     }
 
-    private void removeAddress(View view) {
-        int addressId = address.getId();
+    private boolean validateDate(String expenseDay, String expenseMonth, String expenseYear) {
+        int day = Integer.parseInt(expenseDay);
+        int month = Integer.parseInt(expenseMonth);
+        int year = Integer.parseInt(expenseYear);
 
-        db.addressModel().delete(address);
-
-        Address address = db.addressModel().findById(addressId);
-
-        if(address != null) {
-            Toast.makeText(requireContext(), "Erro ao tentar excluir o endereço " + address.getDescription(),
-                    Toast.LENGTH_SHORT).show();
-            return;
+        if (month < 1 || month > 12) {
+            showToast("Insira um valor válido para o mês (1-12)");
+            return false;
         }
 
-        Toast.makeText(requireContext(), "O endereço foi excluido com sucesso",
-                Toast.LENGTH_SHORT).show();
+        int[] daysInMonth = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-        NavController navController = Navigation.findNavController(view);
-        navController.navigateUp();
+        if (month == 2 && isLeapYear(year)) {
+            daysInMonth[2] = 29;
+        }
+
+        if (day < 1 || day > daysInMonth[month]) {
+            showToast("Insira um valor válido para o dia");
+            return false;
+        }
+
+        return true;
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        if (address != null) {
-            mMap = googleMap;
-
-            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(latLng).title(address.getDescription()));
-            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,
-                    15));
+    private boolean isValidInteger(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
+    }
+
+    private boolean isValidDouble(String value) {
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean isLeapYear(int year) {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void removeExpense(View view) {
+        db.expenseModel().delete(expense);
+        Toast.makeText(requireContext(), "A despesa foi excluída com sucesso", Toast.LENGTH_SHORT).show();
+        Navigation.findNavController(view).navigateUp();
     }
 
     @Override

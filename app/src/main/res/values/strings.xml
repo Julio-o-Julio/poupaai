@@ -14,13 +14,45 @@
 
     <!-- Strings used for main navigation -->
     <string name="may_expenses_monthly">Minhas despesas mensais</string>
+    <string name="my_expenses">Minhas despesas</string>
     <string name="add_expenses">Adicionar despesa</string>
     <string name="my_profile">Meu perfil</string>
 
-    <!-- Strings used for form to profile -->
+    <!-- Strings used for form to my expenses monthly -->
     <string name="month_name">Nome do mês</string>
     <string name="month_year">Ano do mês</string>
     <string name="total_expenses_of_month">Total de despesas do mês</string>
+
+    <!-- Strings used for form to my expenses -->
+    <string name="expense_day">Dia da despesa</string>
+    <string name="expense_month_name">de nome do mês</string>
+    <string name="expense_value">Valor da despesa</string>
+    <string name="expense_category">Categoria da despesa</string>
+    <string name="expense_description">Descrição da despesa</string>
+    <string name="expense_status">Status da despesa</string>
+
+    <!-- Strings used for form to add expenses -->
+    <string name="expense_day_label">Dia</string>
+    <string name="expense_month_label">Mês</string>
+    <string name="expense_year_label">Ano</string>
+    <string name="expense_category_label">Categoria</string>
+    <string name="expense_value_label">Valor</string>
+    <string name="expense_description_label">Descrição</string>
+    <string name="expense_day_hint">dia</string>
+    <string name="expense_month_hint">mês</string>
+    <string name="expense_year_hint">ano</string>
+    <string name="expense_category_hint">adicionar categoria</string>
+    <string name="expense_value_hint">R$ 00,00</string>
+    <string name="expense_description_hint">descrição...</string>
+    <string name="btn_remove_expense">Excluir despesa</string>
+    <string name="btn_save_expense">Salvar despesa</string>
+    <string-array name="expense_status_array">
+        <item>Escolha um status</item>
+        <item>Pago</item>
+        <item>Pendente</item>
+        <item>Atrasado</item>
+        <item>Cancelado</item>
+    </string-array>
 
     <!-- Strings used for form to profile -->
     <string name="my_name_label">Meu nome de usuário</string>
