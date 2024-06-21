@@ -2,12 +2,13 @@ package com.example.poupaai.views.initial;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.provider.MediaStore;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -32,6 +34,7 @@ public class FormRegister extends Fragment {
 
     private static final int GALLERY_REQUEST_CODE = 100;
     private static final int CAMERA_REQUEST_CODE = 200;
+    private static final int PERMISSION_REQUEST_CODE = 300;
     private FragmentFormRegisterBinding binding;
     private LocalDatabase db;
     private Uri imageUri;
@@ -65,20 +68,20 @@ public class FormRegister extends Fragment {
         String email = binding.edtEmail.getText().toString();
         String password = binding.edtPassword.getText().toString();
 
-        if(name.isEmpty()){
+        if (name.isEmpty()) {
             Toast.makeText(requireContext(), "O nome é obrigatório", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(email.isEmpty()) {
+        if (email.isEmpty()) {
             Toast.makeText(requireContext(), "O email é obrigatório", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(password.isEmpty()) {
+        if (password.isEmpty()) {
             Toast.makeText(requireContext(), "A senha é obrigatória", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(requireContext(), "Digite um email válido", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -98,8 +101,7 @@ public class FormRegister extends Fragment {
 
         if (imageUri != null) {
             newUser.setProfileImagePath(imageUri.getPath());
-        }
-        if (photoUri != null) {
+        } else if (photoUri != null) {
             newUser.setProfileImagePath(photoUri.toString());
         }
 
@@ -116,13 +118,43 @@ public class FormRegister extends Fragment {
     }
 
     public void chooseImageFromGallery(View view) {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
+        if (checkAndRequestPermissions()) {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
+        }
     }
 
     public void takePictureFromCamera(View view) {
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+        if (checkAndRequestPermissions()) {
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+        }
+    }
+
+    private boolean checkAndRequestPermissions() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_CODE);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(requireContext(), "Permissões concedidas.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "Permissões são necessárias para esta funcionalidade.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override

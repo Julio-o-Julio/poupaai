@@ -107,12 +107,30 @@
             app:layout_constraintTop_toBottomOf="@id/tvMyPasswordLabel" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnChooseGalery"
+            style="@style/ButtonNeutral"
+            android:layout_marginTop="12dp"
+            android:text="@string/btn_choose_galery"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edtMyPassword" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnTakePicture"
+            style="@style/ButtonNeutral"
+            android:layout_marginTop="12dp"
+            android:text="@string/btn_take_picture"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnChooseGalery" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSave"
             style="@style/Button"
             android:text="@string/btn_save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edtMyPassword" />
+            app:layout_constraintTop_toBottomOf="@id/btnTakePicture" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnRemoveAccount"

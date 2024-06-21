@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="transparent">#00000000</color>
     <color name="black">#FF000000</color>
     <color name="gray">#FF333355</color>
     <color name="light_gray">#FF777788</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="roxoEscuro">#FF150041</color>
-    <color name="azulEscuro">#FF1E16AC</color>
-    <color name="azulClaro">#FF00FFEF</color>
+    <color name="roxoEscuro">#FF2f004a</color>
+    <color name="rosaEscuro">#FF84109a</color>
+    <color name="roxoClaro">#FF9e00ff</color>
     <color name="status_paid">#008000</color>
     <color name="status_cancelled">#FF0000</color>
     <color name="status_delayed">#FFA500</color>
