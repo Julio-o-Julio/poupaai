@@ -76,6 +76,6 @@ public abstract class LocalDatabase extends RoomDatabase {
     public abstract UserDAO userModel();
     public abstract MonthDAO monthModel();
     public abstract ExpenseDAO expenseModel();
-    public abstract FriendRequestDAO friendRequestDAO();
-    public abstract NotificationDAO notificationDAO();
+    public abstract FriendRequestDAO friendRequest();
+    public abstract NotificationDAO notification();
 }

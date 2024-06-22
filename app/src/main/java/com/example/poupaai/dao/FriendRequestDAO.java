@@ -15,6 +15,8 @@ public interface FriendRequestDAO {
     void insert(FriendRequest friendRequest);
     @Update
     void update(FriendRequest friendRequest);
+    @Update
+    void delete(FriendRequest friendRequest);
     @Query("SELECT * FROM friend_requests WHERE receiverId = :receiverId AND status = 'pending'")
     List<FriendRequest> getPendingFriendRequests(int receiverId);
     @Query("SELECT * FROM friend_requests WHERE senderId = :senderId")

@@ -18,6 +18,7 @@
     <string name="may_expenses_monthly">Minhas despesas mensais</string>
     <string name="my_expenses">Minhas despesas</string>
     <string name="add_expenses">Adicionar despesa</string>
+    <string name="add_friends">Adicionar amigos</string>
     <string name="my_profile">Meu perfil</string>
 
     <!-- Strings used for form to my expenses monthly -->
@@ -55,6 +56,12 @@
         <item>Atrasado</item>
         <item>Cancelado</item>
     </string-array>
+
+    <!-- Strings used for form to add friends -->
+    <string name="email_friend_label">Email</string>
+    <string name="email_friend_hint">Email que deseja adicionar como amigo...</string>
+    <string name="btn_send_friend_request">Enviar solicitação de amizade</string>
+    <string name="btn_remove_friend">Remover amigo</string>
 
     <!-- Strings used for form to profile -->
     <string name="my_name_label">Meu nome de usuário</string>
