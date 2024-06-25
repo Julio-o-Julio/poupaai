@@ -23,9 +23,11 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     private Month month;
     private NavController navController;
     private User loggedUser;
+    private User friend;
 
-    public ExpenseAdapter(User loggedUser, List<Expense> expenseList, Month month, NavController navController) {
+    public ExpenseAdapter(User loggedUser, User friend, List<Expense> expenseList, Month month, NavController navController) {
         this.loggedUser = loggedUser;
+        this.friend = friend;
         this.expenseList = expenseList;
         this.month = month;
         this.navController = navController;
@@ -45,17 +47,19 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         Expense expense = expenseList.get(position);
         holder.bind(expense);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("month", month);
-                bundle.putParcelable("expense", expense);
-                bundle.putParcelable("user", loggedUser);
+        if (friend == null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("month", month);
+                    bundle.putParcelable("expense", expense);
+                    bundle.putParcelable("user", loggedUser);
 
-                navController.navigate(R.id.action_to_fragment_add_expenses, bundle);
-            }
-        });
+                    navController.navigate(R.id.action_to_fragment_add_expenses, bundle);
+                }
+            });
+        }
     }
 
     @Override

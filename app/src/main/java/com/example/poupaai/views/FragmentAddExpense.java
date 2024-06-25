@@ -26,6 +26,7 @@ import com.example.poupaai.entities.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -79,12 +80,6 @@ public class FragmentAddExpense extends Fragment {
             expense = arguments.getParcelable("expense");
             selectedMonth = arguments.getParcelable("month");
             loggedUser = arguments.getParcelable("user");
-
-            if (loggedUser == null) {
-                Log.e("FragmentAddExpense", "loggedUser is null");
-            }
-        } else {
-            Log.e("FragmentAddExpense", "Arguments are null");
         }
 
         if (selectedMonth != null) {
@@ -102,13 +97,20 @@ public class FragmentAddExpense extends Fragment {
             List<Expense> expenseList = db.expenseModel().getExpensesByUserId(loggedUser.getUid());
 
             if (expenseList != null) {
-                List<Expense> expenseListWithPrompt = new ArrayList<>();
+                HashSet<String> uniqueCategories = new HashSet<>();
+                List<Expense> filteredExpenseList = new ArrayList<>();
+
+                for (Expense expense : expenseList) {
+                    if (uniqueCategories.add(expense.getCategory())) {
+                        filteredExpenseList.add(expense);
+                    }
+                }
+
                 Expense promptExpense = new Expense();
                 promptExpense.setCategory("Categorias");
-                expenseListWithPrompt.add(promptExpense);
-                expenseListWithPrompt.addAll(expenseList);
+                filteredExpenseList.add(0, promptExpense);
 
-                ArrayAdapter<Expense> expenseArrayAdapter = getExpenseArrayAdapter(expenseListWithPrompt);
+                ArrayAdapter<Expense> expenseArrayAdapter = getExpenseArrayAdapter(filteredExpenseList);
                 binding.spinnerExpenseCategories.setAdapter(expenseArrayAdapter);
 
                 if (expense != null) {
@@ -126,8 +128,8 @@ public class FragmentAddExpense extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         if (position != 0) {
-                            Expense expense = (Expense) parent.getItemAtPosition(position);
-                            binding.edtExpenseCategory.setText(expense.getCategory());
+                            Expense selectedExpense = (Expense) parent.getItemAtPosition(position);
+                            binding.edtExpenseCategory.setText(selectedExpense.getCategory());
                         } else {
                             binding.edtExpenseCategory.setText("");
                         }
@@ -241,7 +243,7 @@ public class FragmentAddExpense extends Fragment {
         String monthName = monthNumberToNameMap.get(Integer.parseInt(expenseMonth));
         int monthYear = Integer.parseInt(expenseYear);
 
-        if (selectedMonth == null || !Objects.equals(selectedMonth.getMonthName(), monthName)) {
+        if (selectedMonth == null || !Objects.equals(selectedMonth.getMonthName(), monthName) || selectedMonth.getYear() != monthYear) {
             List<Month> months = db.monthModel().findByMonthNameAndYear(monthName, monthYear);
             if (months.isEmpty()) {
                 selectedMonth = new Month();

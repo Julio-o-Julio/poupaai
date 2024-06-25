@@ -25,12 +25,14 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MonthViewHol
     private List<Month> monthList;
     private LocalDatabase db;
     private User loggedUser;
+    private User friend;
     private NavController navController;
 
-    public MonthAdapter(List<Month> monthList, LocalDatabase db, User loggedUser, NavController navController) {
+    public MonthAdapter(List<Month> monthList, LocalDatabase db, User loggedUser, User friend, NavController navController) {
         this.monthList = monthList;
         this.db = db;
         this.loggedUser = loggedUser;
+        this.friend = friend;
         this.navController = navController;
     }
 
@@ -54,6 +56,7 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MonthViewHol
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("month", month);
                 bundle.putParcelable("user", loggedUser);
+                bundle.putParcelable("friend", friend);
 
                 navController.navigate(R.id.action_to_fragment_my_expenses, bundle);
             }
@@ -82,8 +85,13 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthAdapter.MonthViewHol
             monthName.setText(month.getMonthName());
             year.setText(String.valueOf(month.getYear()));
 
-            List<Expense> expenseList = db.expenseModel().getExpensesByMonthIdAndUserId(month.getId(), loggedUser.getUid());
-            double total = 0;
+            List<Expense> expenseList;
+            if (friend != null) {
+                expenseList = db.expenseModel().getExpensesByMonthIdAndUserId(month.getId(), friend.getUid());
+            } else {
+                expenseList = db.expenseModel().getExpensesByMonthIdAndUserId(month.getId(), loggedUser.getUid());
+            }
+            double total = 0.0;
             for (Expense expense : expenseList) {
                 total += expense.getValue();
             }

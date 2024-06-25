@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ public class FragmentMyExpenses extends Fragment {
     private ArrayList<Expense> expenseList;
     private Month month;
     private User loggedUser;
+    private User friend;
     private LocalDatabase db;
     private OnMonthSelectedListener callback;
 
@@ -41,7 +43,7 @@ public class FragmentMyExpenses extends Fragment {
         try {
             callback = (OnMonthSelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OnMonthSelectedListener");
+            throw new ClassCastException(context + " must implement OnMonthSelectedListener");
         }
     }
 
@@ -59,15 +61,24 @@ public class FragmentMyExpenses extends Fragment {
         if (arguments != null) {
             month = arguments.getParcelable("month");
             loggedUser = arguments.getParcelable("user");
+            friend = arguments.getParcelable("friend");
         }
 
-        expenseList = new ArrayList<>(db.expenseModel().getExpensesByMonthIdAndUserId(month.getId(), loggedUser.getUid()));
+        if (friend != null) {
+            if (getActivity() != null) {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Despesas de " + friend.getUsername());
+            }
+            
+            expenseList = new ArrayList<>(db.expenseModel().getExpensesByMonthIdAndUserId(month.getId(), friend.getUid()));
+        } else {
+            expenseList = new ArrayList<>(db.expenseModel().getExpensesByMonthIdAndUserId(month.getId(), loggedUser.getUid()));
+        }
 
         if (callback != null) {
             callback.onMonthSelected(month);
         }
 
-        expenseAdapter = new ExpenseAdapter(loggedUser, expenseList, month, NavHostFragment.findNavController(this));
+        expenseAdapter = new ExpenseAdapter(loggedUser, friend, expenseList, month, NavHostFragment.findNavController(this));
 
         RecyclerView recyclerView = binding.recyclerViewFragmentMyExpenses;
         recyclerView.setAdapter(expenseAdapter);

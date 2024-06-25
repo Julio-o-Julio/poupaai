@@ -9,13 +9,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.poupaai.database.LocalDatabase;
 import com.example.poupaai.databinding.FragmentAddFriendsBinding;
 import com.example.poupaai.entities.FriendRequest;
+import com.example.poupaai.entities.Notification;
 import com.example.poupaai.entities.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,7 +62,19 @@ public class FragmentAddFriends extends Fragment {
         newFriendRequest.setStatus("pending");
 
         db.friendRequest().insert(newFriendRequest);
+
+        FriendRequest friendRequest = db.friendRequest().getRequestSenderIdAndReseiverId(loggedUser.getUid(), user.getUid());
+
+        Notification notification = new Notification();
+        notification.setFriendRequestId(friendRequest.getId());
+        notification.setMessage("Você recebeu uma solicitação de amizade de " + loggedUser.getUsername());
+        notification.setRead(false);
+
+        db.notification().insert(notification);
+
         showToast("Solicitação de amizade enviada com sucesso");
+
+        binding.edtFriendEmail.setText("");
     }
 
     private void removeFriendRequest(View view) {
@@ -74,15 +87,20 @@ public class FragmentAddFriends extends Fragment {
         User user = db.userModel().findByEmail(friendEmail);
 
         List<FriendRequest> friendRequests = db.friendRequest().getAllFriendRequestsSender(loggedUser.getUid());
+        boolean requestFound = false;
         for (FriendRequest request : friendRequests) {
             if (request.getSenderId() == loggedUser.getUid() && request.getReceiverId() == user.getUid() && !Objects.equals(request.getStatus(), "rejected")) {
                 db.friendRequest().delete(request);
-                showToast("Solicitação de amizade excluida com sucesso");
-                return;
+                requestFound = true;
+                showToast("Solicitação de amizade excluída com sucesso");
+                binding.edtFriendEmail.setText("");
+                break;
             }
         }
 
-        showToast("Solicitação de amizade não encontrada");
+        if (!requestFound) {
+            showToast("Solicitação de amizade não encontrada");
+        }
     }
 
     private boolean validateFriendRequestFields(String friendEmail, String action) {
@@ -117,9 +135,9 @@ public class FragmentAddFriends extends Fragment {
                 if (request.getReceiverId() == user.getUid() && !Objects.equals(request.getStatus(), "rejected")) {
                     return true;
                 }
-                showToast("Solicitação de amizade não encontrada");
-                return false;
             }
+            showToast("Solicitação de amizade não encontrada");
+            return false;
         }
         return true;
     }

@@ -9,8 +9,23 @@
         android:title="@string/may_expenses_monthly"
         app:showAsAction="never" />
     <item
-        android:id="@+id/my_profile"
+        android:id="@+id/add_friends"
         android:orderInCategory="2"
+        android:title="@string/add_friends"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/friends"
+        android:orderInCategory="3"
+        android:title="@string/friends"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/my_notifications"
+        android:orderInCategory="4"
+        android:title="@string/notifications"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/my_profile"
+        android:orderInCategory="5"
         android:title="@string/my_profile"
         app:showAsAction="never" />
 </menu>

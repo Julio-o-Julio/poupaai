@@ -13,8 +13,8 @@ import java.util.List;
 
 @Dao
 public interface UserDAO {
-    @Query("SELECT * FROM users")
-    List<User> getAll();
+    @Query("SELECT * FROM users WHERE uid IN (SELECT receiverId FROM friend_requests WHERE senderId = :userId AND status = 'accepted' UNION SELECT senderId FROM friend_requests WHERE receiverId = :userId AND status = 'accepted')")
+    List<User> getAllFriends(int userId);
     @Query("SELECT * FROM users WHERE uid IN (:userIds)")
     List<User> loadAllByIds(int[] userIds);
     @Query("SELECT * FROM users WHERE uid = :id LIMIT 1")

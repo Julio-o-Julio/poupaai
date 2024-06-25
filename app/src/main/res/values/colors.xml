@@ -4,6 +4,7 @@
     <color name="black">#FF000000</color>
     <color name="gray">#FF333355</color>
     <color name="light_gray">#FF777788</color>
+    <color name="super_light_gray">#119e00ff</color>
     <color name="white">#FFFFFFFF</color>
     <color name="roxoEscuro">#FF2f004a</color>
     <color name="rosaEscuro">#FF84109a</color>

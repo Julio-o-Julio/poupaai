@@ -1,8 +1,6 @@
 package com.example.poupaai.views;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,36 +11,28 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.poupaai.adapters.MonthAdapter;
+import com.example.poupaai.adapters.NotificationAdapter;
 import com.example.poupaai.database.LocalDatabase;
-import com.example.poupaai.databinding.FragmentMyExpensesMonthlyBinding;
-import com.example.poupaai.entities.Month;
+import com.example.poupaai.databinding.FragmentMyNotificationsBinding;
+import com.example.poupaai.entities.Notification;
 import com.example.poupaai.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentMyExpensesMonthly extends Fragment {
-    private FragmentMyExpensesMonthlyBinding binding;
+public class FragmentMyNotifications extends Fragment {
+    private FragmentMyNotificationsBinding binding;
     private LocalDatabase db;
-    private MonthAdapter monthAdapter;
-    private List<Month> monthList;
+    private NotificationAdapter notificationAdapter;
+    private List<Notification> notificationList;
     private User loggedUser;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (getArguments() != null) {
-            loggedUser = getArguments().getParcelable("user");
-        }
-    }
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        binding = FragmentMyExpensesMonthlyBinding.inflate(inflater, container, false);
+        binding = FragmentMyNotificationsBinding.inflate(inflater, container, false);
         db = LocalDatabase.getDatabase(requireContext());
 
         if (loggedUser == null && getArguments() != null) {
@@ -50,9 +40,9 @@ public class FragmentMyExpensesMonthly extends Fragment {
         }
 
         if (loggedUser != null) {
-            monthList = new ArrayList<>(db.monthModel().getMonthsWithExpenses(loggedUser.getUid()));
+            notificationList = new ArrayList<>(db.notification().getUnreadNotifications(loggedUser.getUid()));
         } else {
-            monthList = new ArrayList<>();
+            notificationList = new ArrayList<>();
         }
 
         return binding.getRoot();
@@ -62,10 +52,10 @@ public class FragmentMyExpensesMonthly extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        monthAdapter = new MonthAdapter(monthList, db, loggedUser, null, NavHostFragment.findNavController(this));
+        notificationAdapter = new NotificationAdapter(notificationList, db, loggedUser, NavHostFragment.findNavController(this));
 
-        RecyclerView recyclerView = binding.recyclerViewMyExpensesMonthly;
-        recyclerView.setAdapter(monthAdapter);
+        RecyclerView recyclerView = binding.recyclerViewMyNotifications;
+        recyclerView.setAdapter(notificationAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 

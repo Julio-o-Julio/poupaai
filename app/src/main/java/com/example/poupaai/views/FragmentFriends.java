@@ -1,6 +1,5 @@
 package com.example.poupaai.views;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,36 +12,27 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.poupaai.adapters.MonthAdapter;
+import com.example.poupaai.adapters.FriendAdapter;
 import com.example.poupaai.database.LocalDatabase;
-import com.example.poupaai.databinding.FragmentMyExpensesMonthlyBinding;
-import com.example.poupaai.entities.Month;
+import com.example.poupaai.databinding.FragmentFriendsBinding;
 import com.example.poupaai.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentMyExpensesMonthly extends Fragment {
-    private FragmentMyExpensesMonthlyBinding binding;
+public class FragmentFriends extends Fragment {
+    private FragmentFriendsBinding binding;
     private LocalDatabase db;
-    private MonthAdapter monthAdapter;
-    private List<Month> monthList;
     private User loggedUser;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (getArguments() != null) {
-            loggedUser = getArguments().getParcelable("user");
-        }
-    }
+    private List<User> friendList;
+    private FriendAdapter friendAdapter;
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        binding = FragmentMyExpensesMonthlyBinding.inflate(inflater, container, false);
+        binding = FragmentFriendsBinding.inflate(inflater, container, false);
         db = LocalDatabase.getDatabase(requireContext());
 
         if (loggedUser == null && getArguments() != null) {
@@ -50,9 +40,9 @@ public class FragmentMyExpensesMonthly extends Fragment {
         }
 
         if (loggedUser != null) {
-            monthList = new ArrayList<>(db.monthModel().getMonthsWithExpenses(loggedUser.getUid()));
+            friendList = new ArrayList<>(db.userModel().getAllFriends(loggedUser.getUid()));
         } else {
-            monthList = new ArrayList<>();
+            friendList = new ArrayList<>();
         }
 
         return binding.getRoot();
@@ -62,10 +52,10 @@ public class FragmentMyExpensesMonthly extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        monthAdapter = new MonthAdapter(monthList, db, loggedUser, null, NavHostFragment.findNavController(this));
+        friendAdapter = new FriendAdapter(friendList, loggedUser, NavHostFragment.findNavController(this), requireContext());
 
-        RecyclerView recyclerView = binding.recyclerViewMyExpensesMonthly;
-        recyclerView.setAdapter(monthAdapter);
+        RecyclerView recyclerView = binding.recyclerViewFriends;
+        recyclerView.setAdapter(friendAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 

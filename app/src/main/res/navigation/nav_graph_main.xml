@@ -30,6 +30,18 @@
         <action
             android:id="@+id/action_to_fragment_add_friends"
             app:destination="@id/FragmentAddFriends" />
+        <action
+            android:id="@+id/action_to_fragment_my_notifications"
+            app:destination="@id/FragmentMyNotifications" />
+        <action
+            android:id="@+id/action_to_fragment_notification"
+            app:destination="@id/FragmentNotification" />
+        <action
+            android:id="@+id/action_to_fragment_friends"
+            app:destination="@id/FragmentFriends" />
+        <action
+            android:id="@+id/action_to_fragment_expenses_friends"
+            app:destination="@id/FragmentExpensesFriends" />
     </fragment>
     <fragment
         android:id="@+id/FragmentMyExpenses"
@@ -52,6 +64,18 @@
         <action
             android:id="@+id/action_to_fragment_add_friends"
             app:destination="@id/FragmentAddFriends" />
+        <action
+            android:id="@+id/action_to_fragment_my_notifications"
+            app:destination="@id/FragmentMyNotifications" />
+        <action
+            android:id="@+id/action_to_fragment_notification"
+            app:destination="@id/FragmentNotification" />
+        <action
+            android:id="@+id/action_to_fragment_friends"
+            app:destination="@id/FragmentFriends" />
+        <action
+            android:id="@+id/action_to_fragment_expenses_friends"
+            app:destination="@id/FragmentExpensesFriends" />
     </fragment>
     <fragment
         android:id="@+id/FragmentAddExpense"
@@ -74,6 +98,86 @@
         <action
             android:id="@+id/action_to_fragment_add_friends"
             app:destination="@id/FragmentAddFriends" />
+        <action
+            android:id="@+id/action_to_fragment_my_notifications"
+            app:destination="@id/FragmentMyNotifications" />
+        <action
+            android:id="@+id/action_to_fragment_notification"
+            app:destination="@id/FragmentNotification" />
+        <action
+            android:id="@+id/action_to_fragment_friends"
+            app:destination="@id/FragmentFriends" />
+        <action
+            android:id="@+id/action_to_fragment_expenses_friends"
+            app:destination="@id/FragmentExpensesFriends" />
+    </fragment>
+    <fragment
+        android:id="@+id/FragmentFriends"
+        android:name="com.example.poupaai.views.FragmentFriends"
+        android:label="@string/friends"
+        tools:layout="@layout/fragment_friends">
+
+        <action
+            android:id="@+id/action_to_fragment_friends"
+            app:destination="@id/FragmentFriends" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses"
+            app:destination="@id/FragmentMyExpenses" />
+        <action
+            android:id="@+id/action_to_fragment_add_expenses"
+            app:destination="@id/FragmentAddExpense" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses_monthly"
+            app:destination="@id/FragmentMyExpensesMonthly" />
+        <action
+            android:id="@+id/action_to_fragment_my_profile"
+            app:destination="@id/FragmentMyProfile" />
+        <action
+            android:id="@+id/action_to_fragment_add_friends"
+            app:destination="@id/FragmentAddFriends" />
+        <action
+            android:id="@+id/action_to_fragment_my_notifications"
+            app:destination="@id/FragmentMyNotifications" />
+        <action
+            android:id="@+id/action_to_fragment_notification"
+            app:destination="@id/FragmentNotification" />
+        <action
+            android:id="@+id/action_to_fragment_expenses_friends"
+            app:destination="@id/FragmentExpensesFriends" />
+    </fragment>
+    <fragment
+        android:id="@+id/FragmentExpensesFriends"
+        android:name="com.example.poupaai.views.FragmentExpensesFriends"
+        android:label="@string/friends"
+        tools:layout="@layout/fragment_expenses_friends">
+
+        <action
+            android:id="@+id/action_to_fragment_expenses_friends"
+            app:destination="@id/FragmentExpensesFriends" />
+        <action
+            android:id="@+id/action_to_fragment_friends"
+            app:destination="@id/FragmentFriends" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses"
+            app:destination="@id/FragmentMyExpenses" />
+        <action
+            android:id="@+id/action_to_fragment_add_expenses"
+            app:destination="@id/FragmentAddExpense" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses_monthly"
+            app:destination="@id/FragmentMyExpensesMonthly" />
+        <action
+            android:id="@+id/action_to_fragment_my_profile"
+            app:destination="@id/FragmentMyProfile" />
+        <action
+            android:id="@+id/action_to_fragment_add_friends"
+            app:destination="@id/FragmentAddFriends" />
+        <action
+            android:id="@+id/action_to_fragment_my_notifications"
+            app:destination="@id/FragmentMyNotifications" />
+        <action
+            android:id="@+id/action_to_fragment_notification"
+            app:destination="@id/FragmentNotification" />
     </fragment>
     <fragment
         android:id="@+id/FragmentAddFriends"
@@ -96,6 +200,86 @@
         <action
             android:id="@+id/action_to_fragment_my_expenses"
             app:destination="@id/FragmentMyExpenses" />
+        <action
+            android:id="@+id/action_to_fragment_my_notifications"
+            app:destination="@id/FragmentMyNotifications" />
+        <action
+            android:id="@+id/action_to_fragment_notification"
+            app:destination="@id/FragmentNotification" />
+        <action
+            android:id="@+id/action_to_fragment_friends"
+            app:destination="@id/FragmentFriends" />
+        <action
+            android:id="@+id/action_to_fragment_expenses_friends"
+            app:destination="@id/FragmentExpensesFriends" />
+    </fragment>
+    <fragment
+        android:id="@+id/FragmentMyNotifications"
+        android:name="com.example.poupaai.views.FragmentMyNotifications"
+        android:label="@string/notifications"
+        tools:layout="@layout/fragment_my_notifications">
+
+        <action
+            android:id="@+id/action_to_fragment_my_notifications"
+            app:destination="@id/FragmentMyNotifications" />
+        <action
+            android:id="@+id/action_to_fragment_my_profile"
+            app:destination="@id/FragmentMyProfile" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses_monthly"
+            app:destination="@id/FragmentMyExpensesMonthly" />
+        <action
+            android:id="@+id/action_to_fragment_add_expenses"
+            app:destination="@id/FragmentAddExpense" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses"
+            app:destination="@id/FragmentMyExpenses" />
+        <action
+            android:id="@+id/action_to_fragment_add_friends"
+            app:destination="@id/FragmentAddFriends" />
+        <action
+            android:id="@+id/action_to_fragment_notification"
+            app:destination="@id/FragmentNotification" />
+        <action
+            android:id="@+id/action_to_fragment_friends"
+            app:destination="@id/FragmentFriends" />
+        <action
+            android:id="@+id/action_to_fragment_expenses_friends"
+            app:destination="@id/FragmentExpensesFriends" />
+    </fragment>
+    <fragment
+        android:id="@+id/FragmentNotification"
+        android:name="com.example.poupaai.views.FragmentNotification"
+        android:label="@string/notification"
+        tools:layout="@layout/fragment_notification">
+
+        <action
+            android:id="@+id/action_to_fragment_notification"
+            app:destination="@id/FragmentNotification" />
+        <action
+            android:id="@+id/action_to_fragment_my_profile"
+            app:destination="@id/FragmentMyProfile" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses_monthly"
+            app:destination="@id/FragmentMyExpensesMonthly" />
+        <action
+            android:id="@+id/action_to_fragment_add_expenses"
+            app:destination="@id/FragmentAddExpense" />
+        <action
+            android:id="@+id/action_to_fragment_my_expenses"
+            app:destination="@id/FragmentMyExpenses" />
+        <action
+            android:id="@+id/action_to_fragment_add_friends"
+            app:destination="@id/FragmentAddFriends" />
+        <action
+            android:id="@+id/action_to_fragment_my_notifications"
+            app:destination="@id/FragmentMyNotifications" />
+        <action
+            android:id="@+id/action_to_fragment_friends"
+            app:destination="@id/FragmentFriends" />
+        <action
+            android:id="@+id/action_to_fragment_expenses_friends"
+            app:destination="@id/FragmentExpensesFriends" />
     </fragment>
     <fragment
         android:id="@+id/FragmentMyProfile"
@@ -118,5 +302,17 @@
         <action
             android:id="@+id/action_to_fragment_add_friends"
             app:destination="@id/FragmentAddFriends" />
+        <action
+            android:id="@+id/action_to_fragment_my_notifications"
+            app:destination="@id/FragmentMyNotifications" />
+        <action
+            android:id="@+id/action_to_fragment_notification"
+            app:destination="@id/FragmentNotification" />
+        <action
+            android:id="@+id/action_to_fragment_friends"
+            app:destination="@id/FragmentFriends" />
+        <action
+            android:id="@+id/action_to_fragment_expenses_friends"
+            app:destination="@id/FragmentExpensesFriends" />
     </fragment>
 </navigation>

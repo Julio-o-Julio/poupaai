@@ -17,6 +17,7 @@
     <!-- Strings used for main navigation -->
     <string name="may_expenses_monthly">Minhas despesas mensais</string>
     <string name="my_expenses">Minhas despesas</string>
+    <string name="friends">Amigos</string>
     <string name="add_expenses">Adicionar despesa</string>
     <string name="add_friends">Adicionar amigos</string>
     <string name="my_profile">Meu perfil</string>
@@ -49,6 +50,7 @@
     <string name="expense_description_hint">descrição...</string>
     <string name="btn_remove_expense">Excluir despesa</string>
     <string name="btn_save_expense">Salvar despesa</string>
+    <string name="friend_name">Nome do amigo</string>
     <string-array name="expense_status_array">
         <item>Escolha um status</item>
         <item>Pago</item>
@@ -62,6 +64,14 @@
     <string name="email_friend_hint">Email que deseja adicionar como amigo...</string>
     <string name="btn_send_friend_request">Enviar solicitação de amizade</string>
     <string name="btn_remove_friend">Remover amigo</string>
+
+    <!-- Strings used for form to notifications -->
+    <string name="notifications">Notificações</string>
+    <string name="notification_name">Pedido de amizade</string>
+    <string name="notification_message">Mensagem da notificação</string>
+    <string name="notification">Notificação</string>
+    <string name="btn_accepted">Aceitar</string>
+    <string name="btn_refused">Recusar</string>
 
     <!-- Strings used for form to profile -->
     <string name="my_name_label">Meu nome de usuário</string>
