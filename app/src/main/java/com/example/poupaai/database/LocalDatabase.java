@@ -36,11 +36,9 @@ public abstract class LocalDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
-    // Migration from version 2 to version 3
     static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            // Create FriendRequest table
             database.execSQL("CREATE TABLE IF NOT EXISTS `friend_request` (" +
                     "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                     "`senderId` INTEGER NOT NULL, " +
@@ -51,11 +49,9 @@ public abstract class LocalDatabase extends RoomDatabase {
         }
     };
 
-    // Migration from version 3 to version 4
     static final Migration MIGRATION_3_4 = new Migration(3, 4) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            // Create Notification table
             database.execSQL("CREATE TABLE IF NOT EXISTS `notification` (" +
                     "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                     "`friendRequestId` INTEGER NOT NULL, " +
@@ -68,7 +64,6 @@ public abstract class LocalDatabase extends RoomDatabase {
     private static final Migration MIGRATION_4_5 = new Migration(4, 5) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            // Execute the SQL statement to add the new column
             database.execSQL("ALTER TABLE users ADD COLUMN profile_image_path TEXT");
         }
     };
